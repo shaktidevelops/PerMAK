@@ -15,7 +15,7 @@ const PermakApp = (() => {
     selectedMemberId: "ALL",         // ALL or mem_...
     reportFormat: "T_FORMAT",        // T_FORMAT | VERTICAL
     bsSubTab: "BALANCE_SHEET",       // BALANCE_SHEET | TRIAL_BALANCE
-    selectedLedgerAccountId: "acc_bank_hdfc",
+    selectedLedgerAccountId: "acc_bank_primary",
 
     // Voucher Entry State
     voucherMode: "PAYMENT",          // RECEIPT | PAYMENT | CONTRA | INVESTMENT | JOURNAL
@@ -600,6 +600,7 @@ const PermakApp = (() => {
                   </div>
                 `;
               }).join('')}
+              ${recurringList.length === 0 ? `<p class="text-xs" style="color:var(--text-muted);">No recurring bills or SIPs configured yet. Click <strong>Manage</strong> to add one.</p>` : ''}
             </div>
           </div>
         </div>
@@ -1920,7 +1921,7 @@ const PermakApp = (() => {
      ========================================================================== */
   function renderAccountLedgerView() {
     const accounts = state.accounts || [];
-    if (!ui.selectedLedgerAccountId && accounts.length > 0) {
+    if ((!ui.selectedLedgerAccountId || !accounts.some(a => a.id === ui.selectedLedgerAccountId)) && accounts.length > 0) {
       ui.selectedLedgerAccountId = accounts[0].id;
     }
 
@@ -2630,7 +2631,7 @@ const PermakApp = (() => {
                 </label>
                 <button class="px-2.5 py-1.5 rounded-lg text-xs font-bold border border-red-300 text-red-700 hover:bg-red-50"
                         onclick="PermakApp.resetToDefaultDemo()">
-                  🔄 Reset Demo Data
+                  🧹 Clear All Data &amp; Start Fresh (₹ 0)
                 </button>
               </div>
             </div>
@@ -2859,11 +2860,17 @@ const PermakApp = (() => {
   }
 
   function resetToDefaultDemo() {
+    const savedSheetUrl = (state && state.meta && state.meta.googleSheetUrl) || "";
     localStorage.removeItem(PermakSync.STORAGE_KEY);
+    localStorage.removeItem("PERMAK_FAMILY_BOOK_V1");
+    localStorage.removeItem("PERMAK_FAMILY_BOOK_V2");
     state = JSON.parse(JSON.stringify(window.PERMAK_DEFAULT_DATA));
+    if (savedSheetUrl && state.meta) {
+      state.meta.googleSheetUrl = savedSheetUrl;
+    }
     PermakSync.saveToLocal(state, true);
     closeModal();
-    showToast("🔄 Reset to default Indian Family Accounting Book dataset!");
+    showToast("🧹 Reset to a clean, zero-balance (₹ 0.00) Accounting Book!");
     renderAll();
   }
 

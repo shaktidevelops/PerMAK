@@ -8,7 +8,7 @@
    ============================================================================ */
 
 const PermakSync = (() => {
-  const STORAGE_KEY = "PERMAK_FAMILY_BOOK_V1";
+  const STORAGE_KEY = "PERMAK_FAMILY_BOOK_V3_CLEAN";
   let phpAvailable = false;
   let hasServiceAccount = false;
 
@@ -58,9 +58,15 @@ const PermakSync = (() => {
   }
 
   /**
-   * Load state from LocalStorage or PHP server (data/permak_db.json) or Default Seed Data
+   * Load state from LocalStorage or PHP server (data/permak_db.json) or Default Clean Starter Data
    */
   async function loadInitialState() {
+    // Purge old demo storage keys so browser starts clean
+    try {
+      localStorage.removeItem("PERMAK_FAMILY_BOOK_V1");
+      localStorage.removeItem("PERMAK_FAMILY_BOOK_V2");
+    } catch (e) {}
+
     // 1. If PHP server has data/permak_db.json, prefer server DB for Windows Desktop consistency
     if (phpAvailable) {
       try {
@@ -91,7 +97,7 @@ const PermakSync = (() => {
       console.warn("LocalStorage read warning:", err);
     }
 
-    // 3. Seed with default Indian Accounting Dataset
+    // 3. Seed with Clean Starter Dataset (0 transactions, 14 essential ₹0 accounts)
     const fresh = JSON.parse(JSON.stringify(window.PERMAK_DEFAULT_DATA));
     saveToLocal(fresh, true);
     return fresh;
