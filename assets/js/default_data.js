@@ -13,9 +13,9 @@ window.PERMAK_DEFAULT_DATA = {
     accountingStandard: "Indian Standard Double-Entry (Golden Rules)",
     defaultFY: "2026-27",
     theme: "bahi",
-    lastUpdated: "2026-10-10T15:30:00+05:30",
+    lastUpdated: "2026-10-10T15:35:00+05:30",
     gasWebAppUrl: "",
-    googleSheetUrl: "https://docs.google.com/spreadsheets/d/1Eu--aRst1qPimxhd4QKRWMEszzR1jFn7T9R2vdEau3g/edit?gid=0#gid=0",
+    googleSheetUrl: "",
     autoSyncCloud: true
   },
 

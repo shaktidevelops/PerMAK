@@ -1,5 +1,7 @@
-# Never commit Google Cloud Service Account private keys
+# Never commit local personal database or Google Cloud Service Account keys to public GitHub
+data/permak_db.json
 data/google_service_account.json
+PerMAK_Google_Sheet_Starter.xlsx
 *.pem
 *.key
 .env
