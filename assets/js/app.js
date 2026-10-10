@@ -300,12 +300,12 @@ const PermakApp = (() => {
       <div class="bahi-card p-5 mb-6 flex flex-wrap items-center justify-between gap-4" style="border-left: 5px solid var(--accent-primary);">
         <div>
           <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider" style="color: var(--accent-primary);">
-            <span>🪔     </span>
+            <span>🪔 INDIAN DOUBLE-ENTRY ACCOUNTING</span>
             <span>•</span>
             <span>${escapeHtml(activeMemberLabel)}</span>
           </div>
           <h1 class="text-2xl font-bold font-serif-book mt-1">
-            Namaste! Welcome to ${escapeHtml(state.meta.bookTitle || 'PerMAK Family Accounting Book')}
+            Welcome to ${escapeHtml(state.meta.bookTitle || 'PerMAK Family Accounting Book')}
           </h1>
           <p class="text-xs mt-1" style="color: var(--text-secondary);">
             Period: <strong>${PermakAccounting.formatDateIN(ui.startDate)}</strong> to <strong>${PermakAccounting.formatDateIN(ui.endDate)}</strong>
@@ -386,7 +386,7 @@ const PermakApp = (() => {
             ${PermakAccounting.formatINR(kpis.netSurplus, 0)}
           </div>
           <div class="text-xs mt-2" style="color: var(--text-secondary);">
-            Transferred to <strong>Family Corpus Fund</strong>
+            Transferred to <strong>Opening Capital / Net Worth Corpus</strong>
           </div>
         </div>
       </div>
@@ -399,7 +399,7 @@ const PermakApp = (() => {
             <span class="badge-dr">Dr</span>
           </div>
           <div class="text-lg font-bold font-mono-num mt-1">${PermakAccounting.formatINR(kpis.totalCash, 0)}</div>
-          <div class="text-xs mt-1" style="color: var(--text-muted);">${buckets.cashAccounts.length} Cash Boxes / Wallets</div>
+          <div class="text-xs mt-1" style="color: var(--text-muted);">${buckets.cashAccounts.length} Cash Account(s)</div>
         </div>
 
         <div class="bahi-card p-4 cursor-pointer hover:border-amber-600" onclick="PermakApp.switchTab('banking')">
@@ -408,7 +408,7 @@ const PermakApp = (() => {
             <span class="badge-dr">Dr</span>
           </div>
           <div class="text-lg font-bold font-mono-num mt-1">${PermakAccounting.formatINR(kpis.totalBank, 0)}</div>
-          <div class="text-xs mt-1" style="color: var(--text-muted);">HDFC, SBI &amp; ICICI Accounts</div>
+          <div class="text-xs mt-1" style="color: var(--text-muted);">${buckets.bankAccounts.length} Savings / Current Bank Account(s)</div>
         </div>
 
         <div class="bahi-card p-4 cursor-pointer hover:border-amber-600" onclick="PermakApp.switchTab('banking')">
@@ -426,7 +426,7 @@ const PermakApp = (() => {
             <span class="badge-dr">Dr</span>
           </div>
           <div class="text-lg font-bold font-mono-num mt-1">${PermakAccounting.formatINR(kpis.totalFixedAssets, 0)}</div>
-          <div class="text-xs mt-1" style="color: var(--text-muted);">House, Gold Jewellery, Vehicles</div>
+          <div class="text-xs mt-1" style="color: var(--text-muted);">${buckets.fixedAssetAccounts.length} Fixed Asset Head(s)</div>
         </div>
       </div>
 
@@ -1496,7 +1496,7 @@ const PermakApp = (() => {
         <!-- Formal Indian Book Header -->
         <div class="text-center border-b-2 pb-4 mb-5" style="border-color: var(--border-strong);">
           <div class="text-xs font-bold tracking-widest uppercase" style="color: var(--accent-primary);">
-                 •   • INDIAN STANDARD ACCOUNTING
+            PERMAK • INDIAN STANDARD ACCOUNTING
           </div>
           <h2 class="text-2xl font-bold font-serif-book mt-1">${escapeHtml(state.meta.bookTitle || 'PerMAK Family Accounting Book')}</h2>
           <div class="text-sm font-bold mt-1">
@@ -1733,7 +1733,7 @@ const PermakApp = (() => {
       <div class="bahi-card-ruled p-6 print-container">
         <div class="text-center border-b-2 pb-4 mb-5" style="border-color: var(--border-strong);">
           <div class="text-xs font-bold tracking-widest uppercase" style="color: var(--accent-primary);">
-                 •   • INDIAN STANDARD ACCOUNTING
+            PERMAK • INDIAN STANDARD ACCOUNTING
           </div>
           <h2 class="text-2xl font-bold font-serif-book mt-1">${escapeHtml(state.meta.bookTitle || 'PerMAK Family Accounting Book')}</h2>
           <div class="text-sm font-bold mt-1">
@@ -1743,7 +1743,7 @@ const PermakApp = (() => {
             <span>Book: <strong>${escapeHtml(memberTitle)}</strong></span>
             <span>•</span>
             <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
-              ✅    (100% Tallied: Liabilities = Assets)
+              ✅ Double-Entry Verified (100% Tallied: Liabilities = Assets)
             </span>
           </div>
         </div>

@@ -332,7 +332,9 @@ const PermakAccounting = (() => {
     // Ensure Corpus Account is always present even if all zero
     if (!liabilityAccounts.some(a => a.isCorpusAccount)) {
       const totalCorpusClosing = totalInitialSignedSum + priorNominalSurplus + netSurplus;
-      liabilityAccounts.unshift",
+      liabilityAccounts.unshift({
+        id: "acc_cap_corpus",
+        name: "Family Capital / Corpus Fund",
         nature: "LIABILITY",
         groupId: "grp_capital",
         groupName: "Family Capital / Corpus Fund",
