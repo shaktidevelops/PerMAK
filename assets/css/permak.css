@@ -1,0 +1,439 @@
+/* ============================================================================
+   PerMAK — Personal & Home Accounting System (Indian Standard Bahi-Khata)
+   Theme System: Bahi-Khata Heritage | Griha-Lakshmi Emerald | Royal Indigo | Midnight
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Noto+Sans+Devanagari:wght@500;600;700&display=swap');
+
+:root,
+[data-theme="bahi"] {
+  --bg-body: #F8F4EC;
+  --bg-surface: #FFFDF9;
+  --bg-elevated: #F3ECE0;
+  --bg-sidebar: #2A1810;
+  --bg-sidebar-hover: #3D2418;
+  --text-sidebar: #F7EFE6;
+  --text-sidebar-muted: #C4AB97;
+  --accent-primary: #B91C1C;      /* Auspicious Bahi Vermilion / Sindoor */
+  --accent-primary-hover: #991B1B;
+  --accent-secondary: #D97706;    /* Marigold / Haldi Gold */
+  --accent-light: #FEF2F2;
+  --accent-gold-bg: #FFFBEB;
+  --border-color: #E6DEC8;
+  --border-strong: #D4C5A9;
+  --text-main: #1F1610;
+  --text-secondary: #5C4B3B;
+  --text-muted: #8A7663;
+  --dr-color: #C2410C;            /* Naame / Debit */
+  --dr-bg: #FFF7ED;
+  --cr-color: #15803D;            /* Jama / Credit */
+  --cr-bg: #F0FDF4;
+  --ledger-line: rgba(185, 28, 28, 0.08);
+  --shadow-card: 0 4px 20px -4px rgba(42, 24, 16, 0.07), 0 2px 6px -1px rgba(42, 24, 16, 0.04);
+  --header-sacred-bg: linear-gradient(90deg, #7F1D1D 0%, #B91C1C 50%, #7F1D1D 100%);
+  --header-sacred-text: #FEF08A;
+}
+
+[data-theme="emerald"] {
+  --bg-body: #F2F7F4;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #E6F0EA;
+  --bg-sidebar: #062E22;
+  --bg-sidebar-hover: #0B4635;
+  --text-sidebar: #ECFDF5;
+  --text-sidebar-muted: #A7F3D0;
+  --accent-primary: #059669;
+  --accent-primary-hover: #047857;
+  --accent-secondary: #D97706;
+  --accent-light: #ECFDF5;
+  --accent-gold-bg: #FEF3C7;
+  --border-color: #D1E5D9;
+  --border-strong: #A7CDBD;
+  --text-main: #0F291E;
+  --text-secondary: #37584A;
+  --text-muted: #648777;
+  --dr-color: #B45309;
+  --dr-bg: #FFFBEB;
+  --cr-color: #047857;
+  --cr-bg: #ECFDF5;
+  --ledger-line: rgba(5, 150, 105, 0.08);
+  --shadow-card: 0 4px 20px -4px rgba(6, 46, 34, 0.07);
+  --header-sacred-bg: linear-gradient(90deg, #064E3B 0%, #059669 50%, #064E3B 100%);
+  --header-sacred-text: #FEF08A;
+}
+
+[data-theme="indigo"] {
+  --bg-body: #F4F6FB;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #EBF0F9;
+  --bg-sidebar: #111C38;
+  --bg-sidebar-hover: #1E2E56;
+  --text-sidebar: #F1F5F9;
+  --text-sidebar-muted: #94A3B8;
+  --accent-primary: #2563EB;
+  --accent-primary-hover: #1D4ED8;
+  --accent-secondary: #D97706;
+  --accent-light: #EFF6FF;
+  --accent-gold-bg: #FFFBEB;
+  --border-color: #DCE3F0;
+  --border-strong: #C2CEE3;
+  --text-main: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --dr-color: #C2410C;
+  --dr-bg: #FFF7ED;
+  --cr-color: #15803D;
+  --cr-bg: #F0FDF4;
+  --ledger-line: rgba(37, 99, 235, 0.08);
+  --shadow-card: 0 4px 20px -4px rgba(15, 23, 42, 0.07);
+  --header-sacred-bg: linear-gradient(90deg, #1E3A8A 0%, #2563EB 50%, #1E3A8A 100%);
+  --header-sacred-text: #FDE68A;
+}
+
+[data-theme="midnight"] {
+  --bg-body: #0B1120;
+  --bg-surface: #151F32;
+  --bg-elevated: #1E293B;
+  --bg-sidebar: #070B14;
+  --bg-sidebar-hover: #151F32;
+  --text-sidebar: #F8FAFC;
+  --text-sidebar-muted: #94A3B8;
+  --accent-primary: #F59E0B;
+  --accent-primary-hover: #D97706;
+  --accent-secondary: #38BDF8;
+  --accent-light: rgba(245, 158, 11, 0.14);
+  --accent-gold-bg: rgba(245, 158, 11, 0.1);
+  --border-color: #26354D;
+  --border-strong: #334155;
+  --text-main: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --dr-color: #FB923C;
+  --dr-bg: rgba(251, 146, 60, 0.12);
+  --cr-color: #4ADE80;
+  --cr-bg: rgba(74, 222, 128, 0.12);
+  --ledger-line: rgba(245, 158, 11, 0.08);
+  --shadow-card: 0 4px 24px -4px rgba(0, 0, 0, 0.4);
+  --header-sacred-bg: linear-gradient(90deg, #1E293B 0%, #334155 50%, #1E293B 100%);
+  --header-sacred-text: #FCD34D;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.font-serif-book {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-hindi {
+  font-family: 'Noto Sans Devanagari', 'Plus Jakarta Sans', sans-serif;
+}
+
+.font-mono-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Auspicious Top Ribbon */
+.sacred-ribbon {
+  background: var(--header-sacred-bg);
+  color: var(--header-sacred-text);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 1rem;
+  text-align: center;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Bahi-Khata Card Styling */
+.bahi-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bahi-card-ruled {
+  background-color: var(--bg-surface);
+  background-image: linear-gradient(to bottom, transparent 39px, var(--ledger-line) 40px);
+  background-size: 100% 40px;
+  border: 1px solid var(--border-strong);
+  border-top: 4px solid var(--accent-primary);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+}
+
+/* Sidebar Navigation */
+.permak-sidebar {
+  background: var(--bg-sidebar);
+  color: var(--text-sidebar);
+  width: 260px;
+  min-height: calc(100vh - 28px);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  margin: 0.18rem 0.65rem;
+  border-radius: 10px;
+  color: var(--text-sidebar-muted);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+  text-align: left;
+  width: calc(100% - 1.3rem);
+  background: transparent;
+}
+
+.nav-item:hover {
+  background: var(--bg-sidebar-hover);
+  color: var(--text-sidebar);
+}
+
+.nav-item.active {
+  background: var(--accent-primary);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+}
+
+/* Family Member Filter Pills */
+.member-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.member-pill:hover {
+  border-color: var(--accent-primary);
+  color: var(--text-main);
+}
+
+.member-pill.active {
+  background: var(--accent-primary);
+  color: #FFFFFF;
+  border-color: var(--accent-primary);
+  box-shadow: 0 2px 8px rgba(185, 28, 28, 0.25);
+}
+
+/* Dr / Cr Badges */
+.badge-dr {
+  background: var(--dr-bg);
+  color: var(--dr-color);
+  border: 1px solid rgba(194, 65, 12, 0.25);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 5px;
+}
+
+.badge-cr {
+  background: var(--cr-bg);
+  color: var(--cr-color);
+  border: 1px solid rgba(21, 128, 61, 0.25);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 5px;
+}
+
+/* Indian T-Format Accounting Tables */
+.accounting-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.accounting-table th {
+  background: var(--bg-elevated);
+  color: var(--text-main);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.73rem;
+  letter-spacing: 0.04em;
+  padding: 0.7rem 0.85rem;
+  border-bottom: 2px solid var(--border-strong);
+}
+
+.accounting-table td {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+.accounting-table tr:hover td {
+  background-color: var(--accent-light);
+}
+
+.accounting-total-row td {
+  background: var(--bg-elevated) !important;
+  font-weight: 800;
+  border-top: 2px solid var(--border-strong);
+  border-bottom: 3px double var(--border-strong);
+  font-size: 0.92rem;
+}
+
+/* Form Controls */
+.permak-input,
+.permak-select {
+  width: 100%;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.permak-input:focus,
+.permak-select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: #FFFFFF;
+  font-weight: 700;
+  padding: 0.6rem 1.15rem;
+  border-radius: 9px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.86rem;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background: var(--accent-primary-hover);
+}
+
+.btn-secondary {
+  background: var(--bg-elevated);
+  color: var(--text-main);
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  border-radius: 9px;
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.84rem;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent-primary);
+  background: var(--accent-light);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-body);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 99px;
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.62);
+  backdrop-filter: blur(3px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Print Styles for A4 Indian Accounting Statements */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .no-print,
+  .permak-sidebar,
+  .topbar-controls,
+  .member-filter-bar {
+    display: none !important;
+  }
+  .print-container {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .bahi-card,
+  .bahi-card-ruled {
+    box-shadow: none !important;
+    border: 1px solid #999 !important;
+    break-inside: avoid;
+  }
+}
+
+@media (max-width: 1024px) {
+  .permak-sidebar {
+    width: 100%;
+    min-height: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0.4rem;
+  }
+  .nav-item {
+    width: auto;
+    white-space: nowrap;
+    margin: 0 0.2rem;
+    padding: 0.5rem 0.8rem;
+  }
+}

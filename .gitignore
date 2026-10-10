@@ -1,0 +1,7 @@
+# Never commit Google Cloud Service Account private keys
+data/google_service_account.json
+*.pem
+*.key
+.env
+.DS_Store
+Thumbs.db

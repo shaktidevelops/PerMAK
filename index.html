@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bahi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PerMAK — Personal &amp; Home Accounting System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/permak.css" />
+</head>
+<body class="min-h-screen flex flex-col" data-server-mode="GitHub Pages / Hybrid Cloud">
+
+  <!-- Top Header Ribbon -->
+  <div class="sacred-ribbon no-print">
+    <strong>PerMAK</strong> — Personal &amp; Family Accounting System &nbsp;•&nbsp; Indian Standard Double-Entry Accounting (Dr / Cr)
+  </div>
+
+  <!-- Main Application Shell -->
+  <div class="flex-1 flex flex-col lg:flex-row">
+
+    <!-- Left Sidebar Navigation -->
+    <aside class="permak-sidebar no-print">
+      <!-- Brand Identity -->
+      <div class="p-4 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold shadow-md"
+               style="background: linear-gradient(135deg, #D97706, #B91C1C); color: #FEF08A;">
+            📒
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-extrabold text-lg tracking-tight text-white">PerMAK</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono-num font-bold">v1.0.0</span>
+            </div>
+            <div class="text-[11px] opacity-80">Personal &amp; Home Accounting</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 py-3 space-y-0.5">
+        <button class="nav-item active" data-tab="dashboard" onclick="PermakApp.switchTab('dashboard')">
+          <span>🏠</span>
+          <span>Family Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="transactions" onclick="PermakApp.switchTab('transactions')">
+          <span>✍️</span>
+          <span>Smart Entry &amp; Daybook</span>
+        </button>
+        <button class="nav-item" data-tab="recurring" onclick="PermakApp.switchTab('recurring')">
+          <span>🔄</span>
+          <span>Recurring (SIP/EMI/Bills)</span>
+        </button>
+        <button class="nav-item" data-tab="banking" onclick="PermakApp.switchTab('banking')">
+          <span>🏦</span>
+          <span>Bank, Cash &amp; Investments</span>
+        </button>
+
+        <div class="px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider opacity-50 hidden lg:block">
+          Indian Final Accounts
+        </div>
+
+        <button class="nav-item" data-tab="pnl" onclick="PermakApp.switchTab('pnl')">
+          <span>📊</span>
+          <span>P&amp;L A/c (Income &amp; Exp)</span>
+        </button>
+        <button class="nav-item" data-tab="balancesheet" onclick="PermakApp.switchTab('balancesheet')">
+          <span>⚖️</span>
+          <span>Balance Sheet &amp; Trial Bal</span>
+        </button>
+        <button class="nav-item" data-tab="ledger" onclick="PermakApp.switchTab('ledger')">
+          <span>📖</span>
+          <span>Account Ledger Book</span>
+        </button>
+        <button class="nav-item" data-tab="masters" onclick="PermakApp.switchTab('masters')">
+          <span>📚</span>
+          <span>Masters &amp; Accounts</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer: Theme & Cloud Sync -->
+      <div class="p-3 border-t border-white/10 space-y-2.5 hidden lg:block">
+        <div>
+          <label class="block text-[10px] uppercase font-bold opacity-70 mb-1">Book Theme</label>
+          <select id="themeSelector" class="w-full rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-black/30 text-white border border-white/15">
+            <option value="bahi">🪔 Warm Heritage (Default)</option>
+            <option value="emerald">🌿 Nature Emerald</option>
+            <option value="indigo">💎 Royal Indigo Wealth</option>
+            <option value="midnight">🌙 Midnight Dark Ledger</option>
+          </select>
+        </div>
+
+        <button class="w-full py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-amber-200 border border-amber-400/30 transition"
+                onclick="PermakApp.openCloudSyncModal()">
+          <span>☁️ Google Sheet DB Setup</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Right Workspace -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+      <!-- Top Bar: Book Title, Financial Year & Date Range Filter -->
+      <header class="topbar-controls border-b px-4 lg:px-6 py-3 no-print"
+              style="background: var(--bg-surface); border-color: var(--border-color);">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <!-- Book Title & Cloud Status -->
+          <div class="flex items-center gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 id="headerBookTitle" class="font-bold font-serif-book text-base lg:text-lg">
+                  Family Personal &amp; Home Accounting Book
+                </h2>
+                <button class="text-xs px-2 py-0.5 rounded border hover:bg-amber-50 flex items-center gap-1.5 font-semibold"
+                        style="border-color: var(--border-strong);"
+                        onclick="PermakApp.openCloudSyncModal()"
+                        id="cloudStatusBadge">
+                  <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span>Sync Ready</span>
+                </button>
+              </div>
+              <div class="text-[11px]" style="color: var(--text-muted);">
+                Indian Standard Double-Entry Accounting • Financial Year (1 Apr – 31 Mar)
+              </div>
+            </div>
+          </div>
+
+          <!-- Financial Year & Custom Date Range Controls -->
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Quick Preset Pills -->
+            <div class="hidden xl:flex items-center gap-1 mr-1">
+              <button class="px-2 py-1 rounded text-[11px] font-bold border hover:border-amber-700"
+                      style="border-color:var(--border-color); background:var(--bg-elevated);"
+                      onclick="PermakApp.setDateRangePreset('THIS_MONTH')">
+                Oct 2026
+              </button>
+              <button class="px-2 py-1 rounded text-[11px] font-bold border hover:border-amber-700"
+                      style="border-color:var(--border-color); background:var(--bg-elevated);"
+                      onclick="PermakApp.setDateRangePreset('LAST_MONTH')">
+                Sep 2026
+              </button>
+            </div>
+
+            <!-- Financial Year Dropdown -->
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold" style="color:var(--text-secondary);">FY:</span>
+              <select id="fySelector" class="permak-select text-xs font-bold" style="width: auto; padding: 0.4rem 0.65rem;">
+                <option value="2026-27" selected>FY 2026-27 (Current)</option>
+                <option value="2025-26">FY 2025-26 (Previous)</option>
+                <option value="2024-25">FY 2024-25</option>
+                <option value="ALL">All Time (Full Book)</option>
+                <option value="CUSTOM">Custom Date Range</option>
+              </select>
+            </div>
+
+            <!-- Custom Date Range Inputs -->
+            <div class="flex items-center gap-1.5 text-xs">
+              <input type="date" id="filterStartDate" value="2026-04-01"
+                     class="permak-input font-mono-num text-xs" style="width: 132px; padding: 0.35rem 0.5rem;" />
+              <span class="font-bold" style="color:var(--text-muted);">to</span>
+              <input type="date" id="filterEndDate" value="2027-03-31"
+                     class="permak-input font-mono-num text-xs" style="width: 132px; padding: 0.35rem 0.5rem;" />
+            </div>
+
+            <button class="btn-primary text-xs py-1.5 px-3"
+                    onclick="PermakApp.switchTab('transactions', { voucherMode: 'PAYMENT' })">
+              <span>+ New Entry</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Family Member Filter Strip -->
+        <div class="member-filter-bar mt-3 pt-2.5 border-t flex items-center gap-2 overflow-x-auto"
+             style="border-color: var(--border-color);">
+          <span class="text-[11px] font-bold uppercase tracking-wider whitespace-nowrap" style="color: var(--text-muted);">
+            Family Book Filter:
+          </span>
+          <div id="memberFilterStrip" class="flex items-center gap-1.5"></div>
+        </div>
+      </header>
+
+      <!-- Dynamic Main Content Container -->
+      <main id="mainViewContainer" class="flex-1 p-4 lg:p-6 max-w-[1440px] w-full mx-auto">
+        <!-- Populated dynamically by PermakApp -->
+      </main>
+
+      <!-- Footer -->
+      <footer class="px-6 py-3 border-t text-xs flex flex-wrap items-center justify-between gap-2 no-print"
+              style="border-color: var(--border-color); color: var(--text-muted); background: var(--bg-surface);">
+        <div>
+          <strong>PerMAK</strong> — Personal &amp; Home Accounting System • Indian Standard Double-Entry (Dr/Cr)
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="javascript:void(0)" class="hover:underline font-semibold" onclick="PermakApp.openCloudSyncModal()">☁️ Google Sheet Database</a>
+          <span>•</span>
+          <a href="javascript:void(0)" class="hover:underline font-semibold" onclick="PermakSync.exportJSONBackup(PermakApp.getState())">💾 Backup JSON</a>
+          <span>•</span>
+          <span>PHP + GitHub Pages Hybrid</span>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- Modal Portal & Toast Notifications -->
+  <div id="modalPortal"></div>
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+  <!-- Scripts -->
+  <script src="assets/js/default_data.js"></script>
+  <script src="assets/js/accounting_engine.js"></script>
+  <script src="assets/js/sheets_sync.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
