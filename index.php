@@ -218,9 +218,9 @@ $serverMode = "PHP " . PHP_VERSION;
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
   <!-- Scripts -->
-  <script src="assets/js/default_data.js"></script>
-  <script src="assets/js/accounting_engine.js"></script>
-  <script src="assets/js/sheets_sync.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script src="assets/js/default_data.js?v=3.1"></script>
+  <script src="assets/js/accounting_engine.js?v=3.1"></script>
+  <script src="assets/js/sheets_sync.js?v=3.1"></script>
+  <script src="assets/js/app.js?v=3.1"></script>
 </body>
 </html>
