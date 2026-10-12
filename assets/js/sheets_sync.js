@@ -1,49 +1,23 @@
 /* ============================================================================
-   PerMAK — Direct Google Sheet Database + Windows/PHP Local DB + GitHub Sync
-   Zero Google Apps Script Required!
+   PerMAK — 100% Online Google Sheet Sync + Browser Offline Cache
+   Works across Windows, Android, iOS & Web via GitHub Pages (index.html)
    Supports:
-    1. Windows / PHP Local Database (data/permak_db.json) + LocalStorage
-    2. Direct Google Sheet Pull via Sheet URL / ID (gviz CSV — Zero Script)
-    3. Direct Google Sheets REST API v4 2-Way Sync via PHP (Zero Script)
+    1. Direct Google Sheet Pull via Sheet URL / ID (gviz CSV) or Web App URL
+    2. 2-Way Online Push (Auto-Save & Manual Push) via Google Sheet Web App URL
+    3. Instant Browser LocalStorage Cache + JSON / Excel CSV Backup
    ============================================================================ */
 
 const PermakSync = (() => {
   const STORAGE_KEY = "PERMAK_FAMILY_BOOK_V3_CLEAN";
-  let phpAvailable = false;
-  let hasServiceAccount = false;
 
   /**
-   * Detect if PHP backend (api/sheets_proxy.php) is active on this host
+   * Online Mode Status
    */
   async function detectRuntime() {
-    try {
-      const resp = await fetch("api/sheets_proxy.php?action=status", {
-        method: "GET",
-        cache: "no-store"
-      });
-      if (!resp.ok) {
-        phpAvailable = false;
-        return { phpAvailable: false, mode: "GitHub Hosting / Static Mode" };
-      }
-      const text = await resp.text();
-      if (text.trim().startsWith("<?php")) {
-        phpAvailable = false;
-        return { phpAvailable: false, mode: "GitHub Hosting / Static Mode" };
-      }
-      const json = JSON.parse(text);
-      phpAvailable = Boolean(json && json.phpActive);
-      hasServiceAccount = Boolean(json && json.hasServiceAccount);
-      return {
-        phpAvailable,
-        hasServiceAccount,
-        phpVersion: json.phpVersion || "",
-        hasLocalDb: Boolean(json.hasLocalDb),
-        mode: phpAvailable ? `Windows / PHP Engine (v${json.phpVersion})` : "GitHub Hosting / Static Mode"
-      };
-    } catch (e) {
-      phpAvailable = false;
-      return { phpAvailable: false, mode: "GitHub Hosting / Static Mode" };
-    }
+    return {
+      phpAvailable: false,
+      mode: "🌐 Online Cloud Mode (GitHub Pages + Google Sheets)"
+    };
   }
 
   /**
@@ -58,48 +32,28 @@ const PermakSync = (() => {
   }
 
   /**
-   * Load state from LocalStorage or PHP server (data/permak_db.json) or Default Clean Starter Data
+   * Load state from Browser LocalStorage or Default Clean Starter Data
    */
   async function loadInitialState() {
-    // Purge old demo storage keys so browser starts clean
     try {
       localStorage.removeItem("PERMAK_FAMILY_BOOK_V1");
       localStorage.removeItem("PERMAK_FAMILY_BOOK_V2");
     } catch (e) {}
 
-    // 1. If PHP server has data/permak_db.json, prefer server DB for Windows Desktop consistency
-    if (phpAvailable) {
-      try {
-        const resp = await fetch("api/sheets_proxy.php?action=loadLocal", { cache: "no-store" });
-        const json = await resp.json();
-        if (json && json.ok && json.data && Array.isArray(json.data.accounts)) {
-          const merged = mergeWithDefaults(json.data);
-          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(merged)); } catch (e) {}
-          return merged;
-        }
-      } catch (err) {
-        console.warn("PHP local DB load skipped:", err);
-      }
-    }
-
-    // 2. Check Browser LocalStorage
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed && Array.isArray(parsed.accounts) && Array.isArray(parsed.transactions)) {
-          const merged = mergeWithDefaults(parsed);
-          if (phpAvailable) saveToLocal(merged, true);
-          return merged;
+          return mergeWithDefaults(parsed);
         }
       }
     } catch (err) {
       console.warn("LocalStorage read warning:", err);
     }
 
-    // 3. Seed with Clean Starter Dataset (0 transactions, 14 essential ₹0 accounts)
     const fresh = JSON.parse(JSON.stringify(window.PERMAK_DEFAULT_DATA));
-    saveToLocal(fresh, true);
+    saveToLocal(fresh, false);
     return fresh;
   }
 
@@ -108,7 +62,7 @@ const PermakSync = (() => {
       return val
         .replace(/\s*\([^\)]*[\u0900-\u097F]+[^\)]*\)/g, "")
         .replace(/[\u0900-\u097F]+/g, "")
-        .replace(/Shree Ganesh Parivar Bahi-Khata/g, "Family Personal & Home Accounting Book")
+        .replace(/Shree Ganesh Parivar Bahi-Khata/g, "Personal & Home Accounting Book")
         .trim();
     }
     if (Array.isArray(val)) return val.map(stripHindiText);
@@ -142,9 +96,9 @@ const PermakSync = (() => {
   }
 
   /**
-   * Save state to LocalStorage + PHP local file + (optional) Auto-Sync Google Sheet
+   * Save state to LocalStorage + (optional) Auto-Sync to Online Google Sheet
    */
-  async function saveToLocal(state, syncServer = true) {
+  async function saveToLocal(state, syncCloud = true) {
     state.meta = state.meta || {};
     state.meta.lastUpdated = new Date().toISOString();
 
@@ -154,70 +108,63 @@ const PermakSync = (() => {
       console.error("Failed to save to localStorage:", e);
     }
 
-    if (syncServer && phpAvailable) {
-      try {
-        fetch("api/sheets_proxy.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "saveLocal", data: state })
-        }).catch(() => {});
-      } catch (e) {}
-    }
-
-    if (syncServer && state.meta.autoSyncCloud && state.meta.googleSheetUrl) {
+    if (syncCloud && state.meta.autoSyncCloud && state.meta.gasWebAppUrl) {
       pushToGoogleSheet(state).catch(err => console.warn("Auto Google Sheet sync warning:", err));
     }
   }
 
   /**
-   * Direct Push to Google Sheet via Official Google Sheets API v4 (Zero Apps Script)
+   * Push (Write) entire PerMAK Accounting Book directly to Online Google Sheet Web App
+   * Uses text/plain content-type so browsers never fail on CORS preflight
    */
-  async function pushToGoogleSheet(state, serviceAccountJson = "") {
-    const sheetInput = (state.meta && state.meta.googleSheetUrl ? state.meta.googleSheetUrl : "").trim();
-    if (!sheetInput) {
-      throw new Error("Please enter your Google Sheet URL or Sheet ID first.");
+  async function pushToGoogleSheet(state, webAppUrlOverride = "") {
+    const webAppUrl = String(webAppUrlOverride || (state.meta && state.meta.gasWebAppUrl) || "").trim();
+    if (!webAppUrl || !webAppUrl.startsWith("https://script.google.com/")) {
+      throw new Error("To Push (Write) online from Windows or Android, paste your Google Sheet Web App URL (https://script.google.com/macros/s/.../exec) in Box #2.");
     }
 
-    if (!phpAvailable) {
-      throw new Error("Direct Google Sheets API v4 write runs through the PHP backend (index.php). On static GitHub Pages, use 'Pull from Google Sheet' or 'Export Sheet CSVs'.");
-    }
-
-    const resp = await fetch("api/sheets_proxy.php", {
+    const resp = await fetch(webAppUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({
-        action: "pushDirectSheetApiV4",
-        sheetInput,
-        serviceAccountJson: serviceAccountJson || "",
+        action: "pushBook",
         data: state
       })
     });
-    return await resp.json();
+
+    const text = await resp.text();
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      throw new Error("Invalid response from Google Sheet Web App. Make sure 'Who has access' is set to 'Anyone' in Apps Script Deployment.");
+    }
   }
 
   /**
-   * Direct Pull from Google Sheet using ONLY the Google Sheet URL or ID (Zero Apps Script!)
-   * Works both on PHP server AND directly in browser on GitHub Pages!
+   * Pull (Read) directly from Online Google Sheet (via Web App URL or Direct Sheet URL CSV)
    */
-  async function pullFromGoogleSheet(sheetInput) {
+  async function pullFromGoogleSheet(sheetInput, webAppUrl = "") {
+    const cleanWebApp = String(webAppUrl || "").trim();
+
+    // 1. If Web App URL is provided, try JSON pull first
+    if (cleanWebApp && cleanWebApp.startsWith("https://script.google.com/")) {
+      try {
+        const r = await fetch(cleanWebApp, { method: "GET" });
+        if (r.ok) {
+          const j = await r.json();
+          if (j && j.ok && j.data) return j;
+        }
+      } catch (e) {
+        console.warn("Web App GET fallback to CSV:", e);
+      }
+    }
+
+    // 2. Direct browser fetch from Google Sheets gviz CSV endpoint using Sheet URL or ID
     const sheetId = extractSheetId(sheetInput);
     if (!sheetId) {
-      throw new Error("Please enter a valid Google Sheet URL (https://docs.google.com/spreadsheets/d/...) or Sheet ID.");
+      throw new Error("Please enter a valid Google Sheet URL (https://docs.google.com/spreadsheets/d/...) or Web App URL.");
     }
 
-    if (phpAvailable) {
-      const resp = await fetch("api/sheets_proxy.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "pullDirectSheetId",
-          sheetInput: sheetId
-        })
-      });
-      return await resp.json();
-    }
-
-    // Direct browser fetch from Google Sheets gviz CSV endpoint (for GitHub Pages static mode — Zero Apps Script!)
     const tabs = {
       accounts: "Accounts_Master",
       transactions: "Transactions",
@@ -235,7 +182,9 @@ const PermakSync = (() => {
         const csvText = await r.text();
         if (!csvText.trim().startsWith("<!DOCTYPE")) {
           const parsed = parseCsvClient(csvText);
-          if (parsed.length > 0) anyLoaded = true;
+          if (parsed.length > 0 || key === "transactions" || key === "recurringRules") {
+            anyLoaded = true;
+          }
           resultData[key] = parsed;
         }
       }
@@ -244,7 +193,7 @@ const PermakSync = (() => {
     if (!anyLoaded) {
       return {
         ok: false,
-        error: "Could not read tabs from Google Sheet. Ensure the Sheet sharing is set to 'Anyone with the link can view'."
+        error: "Could not read tabs from Google Sheet. Ensure the Sheet sharing is set to 'Anyone with the link can view' (or paste the Web App URL)."
       };
     }
 
@@ -279,9 +228,18 @@ const PermakSync = (() => {
     return lines.slice(1).filter(l => l.trim() !== "").map(l => {
       const vals = parseLine(l);
       const obj = {};
-      headers.forEach((h, i) => { obj[h.trim()] = vals[i] ?? ""; });
+      headers.forEach((h, i) => {
+        const key = h.trim();
+        let val = vals[i] ?? "";
+        if (key === "amount" || key === "openingBalance" || key === "dayOfMonth") {
+          val = Number(String(val).replace(/,/g, "")) || 0;
+        } else if (key === "active") {
+          val = String(val).toLowerCase() !== "false";
+        }
+        obj[key] = val;
+      });
       return obj;
-    });
+    }).filter(row => Boolean(row.id || row.name || row.title));
   }
 
   /**
@@ -293,7 +251,7 @@ const PermakSync = (() => {
     const a = document.createElement("a");
     const dateStr = new Date().toISOString().slice(0, 10);
     a.href = url;
-    a.download = `PerMAK_Family_BahiKhata_${dateStr}.json`;
+    a.download = `PerMAK_Online_Backup_${dateStr}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -310,8 +268,8 @@ const PermakSync = (() => {
     (state.familyMembers || []).forEach(m => { memMap[m.id] = m.shortName || m.name; });
 
     const headers = [
-      "Date", "Voucher No", "Voucher Type", "Debit Account (Dr / Naame)",
-      "Credit Account (Cr / Jama)", "Amount (INR)", "Payment Mode",
+      "Date", "Voucher No", "Voucher Type", "Debit Account (Dr)",
+      "Credit Account (Cr)", "Amount (INR)", "Payment Mode",
       "Family Member", "Ref / UTR No", "Narration / Particulars"
     ];
 
@@ -323,7 +281,7 @@ const PermakSync = (() => {
       accMap[tx.creditAccountId] || tx.creditAccountId,
       tx.amount,
       tx.paymentMode || "",
-      memMap[tx.memberId] || "Home Common",
+      memMap[tx.memberId] || "Self / Home",
       tx.refNo || "",
       (tx.narration || "").replace(/"/g, '""')
     ]);

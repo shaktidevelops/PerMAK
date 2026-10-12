@@ -193,10 +193,15 @@ const PermakApp = (() => {
 
     const cloudStatusEl = document.getElementById("cloudStatusBadge");
     if (cloudStatusEl) {
-      const hasCloud = Boolean(state.meta && state.meta.googleSheetUrl);
-      cloudStatusEl.innerHTML = hasCloud
-        ? `<span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span> <span>Google Sheet Linked</span>`
-        : `<span class="inline-block w-2 h-2 rounded-full bg-amber-500"></span> <span>${runtimeInfo.phpAvailable ? 'Windows / PHP Local DB' : 'Local + GitHub Ready'}</span>`;
+      const hasWebApp = Boolean(state.meta && state.meta.gasWebAppUrl);
+      const hasSheet = Boolean(state.meta && state.meta.googleSheetUrl);
+      if (hasWebApp) {
+        cloudStatusEl.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span> <span>☁️ 2-Way Online Sync</span>`;
+      } else if (hasSheet) {
+        cloudStatusEl.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span> <span>☁️ Sheet Linked</span>`;
+      } else {
+        cloudStatusEl.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-amber-500"></span> <span>☁️ Connect Sheet</span>`;
+      }
     }
 
     // Render Family Member Filter Strip
@@ -2548,11 +2553,12 @@ const PermakApp = (() => {
   }
 
   /**
-   * ☁️ Direct Google Sheet Database & Windows/PHP + GitHub Sync Modal (Zero Apps Script)
+   * ☁️ 100% Online Google Sheet Sync Modal (Windows & Android • GitHub Pages)
    */
   function openCloudSyncModal() {
     const portal = document.getElementById("modalPortal");
     const sheetUrl = (state.meta && state.meta.googleSheetUrl) || "";
+    const webAppUrl = (state.meta && state.meta.gasWebAppUrl) || "";
     const autoSync = Boolean(state.meta && state.meta.autoSyncCloud);
 
     portal.innerHTML = `
@@ -2561,46 +2567,50 @@ const PermakApp = (() => {
           <div class="flex items-center justify-between border-b pb-3 mb-4" style="border-color:var(--border-color);">
             <div>
               <h3 class="text-lg font-bold font-serif-book flex items-center gap-2">
-                <span>☁️ Direct Google Sheet Database &amp; Windows / GitHub Sync</span>
+                <span>☁️ Online Google Sheet Cloud Sync (Windows &amp; Android)</span>
               </h3>
               <p class="text-xs" style="color:var(--text-secondary);">
-                Runtime Mode: <strong>${escapeHtml(runtimeInfo.mode)}</strong> &nbsp;•&nbsp; <span class="text-emerald-700 font-bold">Zero Google Apps Script Required</span>
+                Mode: <strong>100% Online Cloud Edition (GitHub Pages + Google Sheets)</strong>
               </p>
             </div>
             <button class="text-lg font-bold" onclick="PermakApp.closeModal()">✕</button>
           </div>
 
           <div class="space-y-4">
-            <!-- Direct Google Sheet Connection Form -->
+            <!-- Online Google Sheet Connection Form -->
             <div class="p-4 rounded-xl border space-y-3" style="background:var(--bg-elevated); border-color:var(--border-strong);">
               <div>
                 <label class="block text-xs font-bold mb-1">
-                  1. Google Sheet URL or Spreadsheet ID
+                  1. Google Sheet URL (For Direct Online Pull &amp; Reference)
                 </label>
                 <input type="text" id="cloudSheetUrl" class="permak-input font-mono-num text-xs"
-                       placeholder="https://docs.google.com/spreadsheets/d/1AbCdEfGhIjKlMnOpQrStUvWxYz.../edit"
+                       placeholder="https://docs.google.com/spreadsheets/d/1Eu--aRst1qPimxhd4QKRWMEszzR1jFn7T9R2vdEau3g/edit"
                        value="${escapeHtml(sheetUrl)}" />
                 <div class="text-[11px] mt-1" style="color:var(--text-muted);">
-                  Paste your Google Sheet link directly — no Apps Script needed.
+                  Paste your Google Sheet link (shared as <em>"Anyone with the link can view"</em> for instant Pull).
                 </div>
               </div>
 
               <div>
                 <label class="block text-xs font-bold mb-1">
-                  2. Google Service Account JSON Key (Optional — for direct 2-way API v4 Write from PHP)
+                  2. Google Sheet Web App URL (Optional — Enables 2-Way Online Push &amp; Auto-Save from Browser)
                 </label>
-                <textarea id="cloudServiceAccountJson" rows="3" class="permak-input font-mono-num text-[11px]"
-                          placeholder='{"type":"service_account","project_id":"...","private_key":"...","client_email":"..."} (Leave blank if already saved on server or using Pull-only mode)'></textarea>
+                <input type="text" id="cloudWebAppUrl" class="permak-input font-mono-num text-xs"
+                       placeholder="https://script.google.com/macros/s/AKfycb.../exec"
+                       value="${escapeHtml(webAppUrl)}" />
+                <div class="text-[11px] mt-1" style="color:var(--text-muted);">
+                  From your Google Sheet: <strong>Extensions → Apps Script → Deploy → New deployment → Web app (Anyone)</strong>.
+                </div>
               </div>
 
               <div class="flex items-center justify-between pt-1">
                 <label class="inline-flex items-center gap-2 text-xs font-bold cursor-pointer">
                   <input type="checkbox" id="cloudAutoSync" ${autoSync ? 'checked' : ''} />
-                  <span>Auto-Sync to Google Sheet on every new transaction</span>
+                  <span>Auto-Push to Google Sheet on every new voucher / edit</span>
                 </label>
 
                 <button class="btn-secondary text-xs" onclick="PermakApp.saveCloudSettings()">
-                  💾 Save Settings
+                  💾 Save Online Settings
                 </button>
               </div>
             </div>
@@ -2608,20 +2618,20 @@ const PermakApp = (() => {
             <!-- Action Buttons -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button class="btn-primary justify-center text-xs" onclick="PermakApp.triggerPushToSheet()">
-                ⬆️ Push Book to Google Sheet (API v4)
+                ⬆️ Push Book to Google Sheet
               </button>
               <button class="btn-secondary justify-center text-xs" onclick="PermakApp.triggerPullFromSheet()">
-                ⬇️ Pull Directly from Google Sheet
+                ⬇️ Pull Latest from Google Sheet
               </button>
             </div>
 
             <div id="cloudSyncStatusMsg" class="text-xs font-semibold hidden p-3 rounded-lg"></div>
 
-            <!-- Local Backup & Restore -->
+            <!-- JSON Backup & Clean Reset -->
             <div class="p-4 rounded-xl border flex flex-wrap items-center justify-between gap-3" style="border-color:var(--border-color);">
               <div>
-                <div class="font-bold text-xs">📦 Local Windows / JSON Backup, Restore &amp; Reset</div>
-                <div class="text-[11px]" style="color:var(--text-muted);">Saved automatically to <code>data/permak_db.json</code> on Windows PHP + Browser LocalStorage</div>
+                <div class="font-bold text-xs">📦 Browser Cache, JSON Backup &amp; Clean Reset</div>
+                <div class="text-[11px]" style="color:var(--text-muted);">Saved automatically in your browser &amp; synced with your Google Sheet</div>
               </div>
               <div class="flex flex-wrap gap-2">
                 <button class="btn-secondary text-xs" onclick="PermakSync.exportJSONBackup(PermakApp.getState())">
@@ -2638,14 +2648,15 @@ const PermakApp = (() => {
               </div>
             </div>
 
-            <!-- Direct Setup Guide (Zero Apps Script) -->
+            <!-- Online Setup Guide -->
             <div class="p-4 rounded-xl border text-xs space-y-2" style="border-color:var(--border-color);">
               <div class="font-bold text-sm" style="color:var(--accent-primary);">
-                📋 How Direct Google Sheet Sync Works (Zero Apps Script):
+                📋 How Online Google Sheet Sync Works on Windows &amp; Android:
               </div>
               <ul class="list-disc pl-5 space-y-1" style="color:var(--text-secondary);">
-                <li><strong>Direct Pull (Zero Keys / Zero Script):</strong> Share your Google Sheet as <em>"Anyone with the link can view"</em>, paste the Sheet URL in Box #1, and click <strong>Pull Directly from Google Sheet</strong>.</li>
-                <li><strong>Direct 2-Way Read &amp; Write (Google Sheets REST API v4):</strong> Paste a free Google Cloud Service Account JSON key once in Box #2 and share your Google Sheet with that Service Account's <code>client_email</code>. PHP (<code>api/sheets_proxy.php</code>) will directly create and sync <code>Accounts_Master</code>, <code>Transactions</code>, <code>Recurring_Rules</code>, and <code>Family_Members</code> tabs via Google Sheets REST API v4!</li>
+                <li><strong>One-Time Sheet Setup:</strong> Open your Google Sheet → <em>Extensions → Apps Script</em>, paste <code>PerMAK_Rebuild_Sheet.gs</code>, and run <code>rebuildCleanPerMAKSheet</code> once to create the 4 formatted tabs.</li>
+                <li><strong>2-Way Online Sync (Push + Pull):</strong> In Apps Script, click <strong>Deploy → New deployment → Select type: Web app</strong> (Execute as: <em>Me</em>, Who has access: <em>Anyone</em>). Paste that <code>.../exec</code> URL in Box #2 above!</li>
+                <li><strong>Direct Pull Only:</strong> Even without Box #2, pasting your Google Sheet URL in Box #1 lets you pull all 4 tabs directly whenever shared as <em>"Anyone with the link can view"</em>.</li>
               </ul>
             </div>
           </div>
@@ -2764,38 +2775,30 @@ const PermakApp = (() => {
 
   function saveCloudSettings() {
     const sheetUrl = document.getElementById("cloudSheetUrl")?.value.trim() || "";
+    const webAppUrl = document.getElementById("cloudWebAppUrl")?.value.trim() || "";
     const autoSync = Boolean(document.getElementById("cloudAutoSync")?.checked);
-    const saJson = document.getElementById("cloudServiceAccountJson")?.value.trim() || "";
 
     state.meta.googleSheetUrl = sheetUrl;
+    state.meta.gasWebAppUrl = webAppUrl;
     state.meta.autoSyncCloud = autoSync;
-    PermakSync.saveToLocal(state, true);
+    PermakSync.saveToLocal(state, false);
 
-    if (saJson && runtimeInfo.phpAvailable) {
-      fetch("api/sheets_proxy.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "saveServiceAccount", serviceAccountJson: saJson })
-      }).catch(() => {});
-    }
-
-    showCloudMessage("✅ Google Sheet settings saved!", "success");
+    showCloudMessage("✅ Online Google Sheet settings saved in browser!", "success");
     renderAll();
   }
 
   async function triggerPushToSheet() {
     saveCloudSettings();
-    const saJson = document.getElementById("cloudServiceAccountJson")?.value.trim() || "";
     try {
-      showCloudMessage("⏳ Pushing PerMAK Accounting Book directly to Google Sheet via API v4...", "info");
-      const res = await PermakSync.pushToGoogleSheet(state, saJson);
+      showCloudMessage("⏳ Pushing PerMAK Accounting Book online to Google Sheet...", "info");
+      const res = await PermakSync.pushToGoogleSheet(state);
       if (res && res.ok) {
         if (res.spreadsheetUrl) state.meta.googleSheetUrl = res.spreadsheetUrl;
         PermakSync.saveToLocal(state, false);
-        showCloudMessage(`✅ Synced directly to Google Sheet "${res.spreadsheetName || 'PerMAK'}" (Zero Apps Script)!`, "success");
+        showCloudMessage(`✅ Pushed ${state.transactions.length} transactions & ${state.accounts.length} accounts to Google Sheet "${res.spreadsheetName || 'PerMAK'}"!`, "success");
         renderAll();
       } else {
-        showCloudMessage(`⚠️ ${res?.error || 'Check Google Sheet URL & Service Account permissions'}`, "error");
+        showCloudMessage(`⚠️ ${res?.error || 'Paste your Google Sheet Web App URL in Box #2 to enable online Push.'}`, "error");
       }
     } catch (err) {
       showCloudMessage(`❌ Error: ${err.message}`, "error");
@@ -2805,8 +2808,8 @@ const PermakApp = (() => {
   async function triggerPullFromSheet() {
     saveCloudSettings();
     try {
-      showCloudMessage("⏳ Pulling directly from Google Sheet...", "info");
-      const res = await PermakSync.pullFromGoogleSheet(state.meta.googleSheetUrl);
+      showCloudMessage("⏳ Pulling latest accounting book from Google Sheet...", "info");
+      const res = await PermakSync.pullFromGoogleSheet(state.meta.googleSheetUrl, state.meta.gasWebAppUrl);
       if (res && res.ok && res.data) {
         const incoming = res.data;
         if (Array.isArray(incoming.accounts) && incoming.accounts.length > 0) {
@@ -2815,14 +2818,14 @@ const PermakApp = (() => {
             ...incoming,
             meta: { ...state.meta, ...(incoming.meta || {}) }
           });
-          PermakSync.saveToLocal(state, true);
-          showCloudMessage(`✅ Pulled ${state.transactions.length} transactions & ${state.accounts.length} accounts directly from Google Sheet!`, "success");
+          PermakSync.saveToLocal(state, false);
+          showCloudMessage(`✅ Pulled ${state.transactions.length} transactions & ${state.accounts.length} accounts from Google Sheet!`, "success");
           renderAll();
         } else {
-          showCloudMessage("ℹ️ Google Sheet has no account rows yet.", "info");
+          showCloudMessage("ℹ️ Google Sheet has no account rows yet. Run rebuildCleanPerMAKSheet in Apps Script first.", "info");
         }
       } else {
-        showCloudMessage(`⚠️ Pull error: ${res?.error || 'Ensure sheet is shared or Service Account is added'}`, "error");
+        showCloudMessage(`⚠️ Pull error: ${res?.error || 'Ensure Google Sheet URL or Web App URL is pasted above.'}`, "error");
       }
     } catch (err) {
       showCloudMessage(`❌ Error: ${err.message}`, "error");
@@ -2863,14 +2866,18 @@ const PermakApp = (() => {
 
   function resetToDefaultDemo() {
     const savedSheetUrl = (state && state.meta && state.meta.googleSheetUrl) || "";
+    const savedWebAppUrl = (state && state.meta && state.meta.gasWebAppUrl) || "";
+    const savedAutoSync = Boolean(state && state.meta && state.meta.autoSyncCloud);
     localStorage.removeItem(PermakSync.STORAGE_KEY);
     localStorage.removeItem("PERMAK_FAMILY_BOOK_V1");
     localStorage.removeItem("PERMAK_FAMILY_BOOK_V2");
     state = JSON.parse(JSON.stringify(window.PERMAK_DEFAULT_DATA));
-    if (savedSheetUrl && state.meta) {
-      state.meta.googleSheetUrl = savedSheetUrl;
+    if (state.meta) {
+      if (savedSheetUrl) state.meta.googleSheetUrl = savedSheetUrl;
+      if (savedWebAppUrl) state.meta.gasWebAppUrl = savedWebAppUrl;
+      state.meta.autoSyncCloud = savedAutoSync;
     }
-    PermakSync.saveToLocal(state, true);
+    PermakSync.saveToLocal(state, false);
     closeModal();
     showToast("🧹 Reset to a clean, zero-balance (₹ 0.00) Accounting Book!");
     renderAll();
