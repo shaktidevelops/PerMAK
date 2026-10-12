@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="bahi">
+<html lang="en" data-theme="colorful">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PerMAK — Personal &amp; Home Accounting System</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="assets/css/permak.css" />
+  <link rel="stylesheet" href="assets/css/permak.css?v=3.2" />
 </head>
 <body class="min-h-screen flex flex-col" data-server-mode="GitHub Pages / Hybrid Cloud">
 
   <!-- Top Header Ribbon -->
   <div class="sacred-ribbon no-print">
-    <strong>PerMAK</strong> — Personal &amp; Family Accounting System &nbsp;•&nbsp; Indian Standard Double-Entry Accounting (Dr / Cr)
+    ✨ <strong>PerMAK</strong> — Personal &amp; Family Accounting System &nbsp;•&nbsp; 🇮🇳 Indian Standard Double-Entry Accounting (Dr / Cr)
   </div>
 
   <!-- Main Application Shell -->
@@ -23,7 +23,7 @@
       <div class="p-4 border-b border-white/10">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold shadow-md"
-               style="background: linear-gradient(135deg, #D97706, #B91C1C); color: #FEF08A;">
+               style="background: linear-gradient(135deg, #F59E0B, #EC4899, #6366F1); color: #FFFFFF;">
             📒
           </div>
           <div>
@@ -37,42 +37,42 @@
       </div>
 
       <!-- Navigation Links -->
-      <nav class="flex-1 py-3 space-y-0.5">
+      <nav class="flex-1 py-3 space-y-1">
         <button class="nav-item active" data-tab="dashboard" onclick="PermakApp.switchTab('dashboard')">
-          <span>🏠</span>
+          <span class="nav-emoji-box" style="background: linear-gradient(135deg, #6366F1, #8B5CF6);">🏠</span>
           <span>Family Dashboard</span>
         </button>
         <button class="nav-item" data-tab="transactions" onclick="PermakApp.switchTab('transactions')">
-          <span>✍️</span>
+          <span class="nav-emoji-box" style="background: linear-gradient(135deg, #F43F5E, #FB923C);">✍️</span>
           <span>Smart Entry &amp; Daybook</span>
         </button>
         <button class="nav-item" data-tab="recurring" onclick="PermakApp.switchTab('recurring')">
-          <span>🔄</span>
+          <span class="nav-emoji-box" style="background: linear-gradient(135deg, #0EA5E9, #2563EB);">🔄</span>
           <span>Recurring (SIP/EMI/Bills)</span>
         </button>
         <button class="nav-item" data-tab="banking" onclick="PermakApp.switchTab('banking')">
-          <span>🏦</span>
+          <span class="nav-emoji-box" style="background: linear-gradient(135deg, #10B981, #059669);">🏦</span>
           <span>Bank, Cash &amp; Investments</span>
         </button>
 
-        <div class="px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider opacity-50 hidden lg:block">
-          Indian Final Accounts
+        <div class="px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider opacity-60 hidden lg:block">
+          📊 Indian Final Accounts
         </div>
 
         <button class="nav-item" data-tab="pnl" onclick="PermakApp.switchTab('pnl')">
-          <span>📊</span>
+          <span class="nav-emoji-box" style="background: linear-gradient(135deg, #F59E0B, #D97706);">📈</span>
           <span>P&amp;L A/c (Income &amp; Exp)</span>
         </button>
         <button class="nav-item" data-tab="balancesheet" onclick="PermakApp.switchTab('balancesheet')">
-          <span>⚖️</span>
+          <span class="nav-emoji-box" style="background: linear-gradient(135deg, #A855F7, #7E22CE);">⚖️</span>
           <span>Balance Sheet &amp; Trial Bal</span>
         </button>
         <button class="nav-item" data-tab="ledger" onclick="PermakApp.switchTab('ledger')">
-          <span>📖</span>
+          <span class="nav-emoji-box" style="background: linear-gradient(135deg, #EC4899, #DB2777);">📖</span>
           <span>Account Ledger Book</span>
         </button>
         <button class="nav-item" data-tab="masters" onclick="PermakApp.switchTab('masters')">
-          <span>📚</span>
+          <span class="nav-emoji-box" style="background: linear-gradient(135deg, #14B8A6, #0D9488);">📚</span>
           <span>Masters &amp; Accounts</span>
         </button>
       </nav>
@@ -80,9 +80,10 @@
       <!-- Sidebar Footer: Theme & Cloud Sync -->
       <div class="p-3 border-t border-white/10 space-y-2.5 hidden lg:block">
         <div>
-          <label class="block text-[10px] uppercase font-bold opacity-70 mb-1">Book Theme</label>
+          <label class="block text-[10px] uppercase font-bold opacity-70 mb-1">🎨 Color Theme</label>
           <select id="themeSelector" class="w-full rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-black/30 text-white border border-white/15">
-            <option value="bahi">🪔 Warm Heritage (Default)</option>
+            <option value="colorful">🌈 Vibrant Colorful Studio</option>
+            <option value="bahi">🪔 Warm Heritage Bahi</option>
             <option value="emerald">🌿 Nature Emerald</option>
             <option value="indigo">💎 Royal Indigo Wealth</option>
             <option value="midnight">🌙 Midnight Dark Ledger</option>
@@ -206,9 +207,9 @@
   <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
   <!-- Scripts -->
-  <script src="assets/js/default_data.js?v=3.1"></script>
-  <script src="assets/js/accounting_engine.js?v=3.1"></script>
-  <script src="assets/js/sheets_sync.js?v=3.1"></script>
-  <script src="assets/js/app.js?v=3.1"></script>
+  <script src="assets/js/default_data.js?v=3.2"></script>
+  <script src="assets/js/accounting_engine.js?v=3.2"></script>
+  <script src="assets/js/sheets_sync.js?v=3.2"></script>
+  <script src="assets/js/app.js?v=3.2"></script>
 </body>
 </html>

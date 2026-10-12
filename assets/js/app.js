@@ -33,8 +33,9 @@ const PermakApp = (() => {
     runtimeInfo = await PermakSync.detectRuntime();
     state = await PermakSync.loadInitialState();
 
-    // Apply saved theme & default FY
-    const savedTheme = (state.meta && state.meta.theme) || "bahi";
+    // Apply saved theme & default FY (upgrade legacy default 'bahi' to 'colorful')
+    let savedTheme = (state.meta && state.meta.theme) || "colorful";
+    if (savedTheme === "bahi") savedTheme = "colorful";
     setTheme(savedTheme, false);
 
     const fy = (state.meta && state.meta.defaultFY) || "2026-27";
@@ -330,103 +331,103 @@ const PermakApp = (() => {
       <!-- Primary 4 Accounting Pillars KPI Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <!-- Net Worth -->
-        <div class="bahi-card p-4 relative overflow-hidden">
+        <div class="bahi-card kpi-card-networth p-4 relative overflow-hidden">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">Family Net Worth</span>
-            <span class="text-xl">🏛️</span>
+            <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">🏛️ Family Net Worth</span>
+            <span class="acc-emoji-pill" style="background: #E0E7FF;">👑</span>
           </div>
-          <div class="text-2xl font-extrabold font-mono-num mt-2" style="color: var(--accent-primary);">
+          <div class="text-2xl font-extrabold font-mono-num mt-2 text-indigo-700">
             ${PermakAccounting.formatINR(kpis.netWorth, 0)}
           </div>
           <div class="text-xs mt-2 flex items-center justify-between" style="color: var(--text-secondary);">
-            <span>Assets: <strong>${PermakAccounting.formatINRCompact(kpis.totalAssets)}</strong></span>
-            <span>Loans: <strong class="text-amber-700">${PermakAccounting.formatINRCompact(kpis.totalExternalLiabilities)}</strong></span>
+            <span>🏡 Assets: <strong>${PermakAccounting.formatINRCompact(kpis.totalAssets)}</strong></span>
+            <span>🏷️ Loans: <strong class="text-amber-700">${PermakAccounting.formatINRCompact(kpis.totalExternalLiabilities)}</strong></span>
           </div>
         </div>
 
         <!-- Period Income -->
-        <div class="bahi-card p-4">
+        <div class="bahi-card kpi-card-income p-4">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">Period Income</span>
-            <span class="badge-cr">CREDIT / Cr</span>
+            <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">💰 Period Income</span>
+            <span class="badge-cr">🟢 CREDIT / Cr</span>
           </div>
           <div class="text-2xl font-extrabold font-mono-num mt-2 text-emerald-700">
             ${PermakAccounting.formatINR(kpis.totalIncome, 0)}
           </div>
           <div class="text-xs mt-2 flex items-center justify-between" style="color: var(--text-secondary);">
-            <span>${fin.pnl.incomeAccounts.length} Active Income Heads</span>
-            <button class="underline font-semibold" onclick="PermakApp.switchTab('transactions', { voucherMode: 'RECEIPT' })">+ Add Receipt</button>
+            <span>✨ ${fin.pnl.incomeAccounts.length} Active Income Heads</span>
+            <button class="underline font-semibold text-emerald-700" onclick="PermakApp.switchTab('transactions', { voucherMode: 'RECEIPT' })">➕ Add Receipt</button>
           </div>
         </div>
 
         <!-- Period Expense -->
-        <div class="bahi-card p-4">
+        <div class="bahi-card kpi-card-expense p-4">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">Period Expense</span>
-            <span class="badge-dr">DEBIT / Dr</span>
+            <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">🛒 Period Expense</span>
+            <span class="badge-dr">🔴 DEBIT / Dr</span>
           </div>
-          <div class="text-2xl font-extrabold font-mono-num mt-2 text-orange-700">
+          <div class="text-2xl font-extrabold font-mono-num mt-2 text-rose-600">
             ${PermakAccounting.formatINR(kpis.totalExpense, 0)}
           </div>
           <div class="text-xs mt-2 flex items-center justify-between" style="color: var(--text-secondary);">
-            <span>${fin.pnl.expenseAccounts.length} Expense Heads</span>
-            <button class="underline font-semibold" onclick="PermakApp.switchTab('transactions', { voucherMode: 'PAYMENT' })">+ Add Expense</button>
+            <span>🧾 ${fin.pnl.expenseAccounts.length} Expense Heads</span>
+            <button class="underline font-semibold text-rose-600" onclick="PermakApp.switchTab('transactions', { voucherMode: 'PAYMENT' })">➕ Add Expense</button>
           </div>
         </div>
 
         <!-- Net Surplus / Savings -->
-        <div class="bahi-card p-4">
+        <div class="bahi-card kpi-card-surplus p-4">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">Net Surplus / Savings</span>
+            <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-muted);">💎 Net Surplus / Savings</span>
             <span class="px-2 py-0.5 rounded-full text-xs font-bold ${kpis.netSurplus >= 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
-              ${kpis.savingsRate.toFixed(1)}% Saved
+              🎯 ${kpis.savingsRate.toFixed(1)}% Saved
             </span>
           </div>
           <div class="text-2xl font-extrabold font-mono-num mt-2 ${kpis.netSurplus >= 0 ? 'text-emerald-700' : 'text-red-700'}">
             ${PermakAccounting.formatINR(kpis.netSurplus, 0)}
           </div>
           <div class="text-xs mt-2" style="color: var(--text-secondary);">
-            Transferred to <strong>Opening Capital / Net Worth Corpus</strong>
+            🏛️ Transferred to <strong>Opening Capital / Net Worth Corpus</strong>
           </div>
         </div>
       </div>
 
       <!-- Secondary 4-Bucket Wealth & Liquidity Strip -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="bahi-card p-4 cursor-pointer hover:border-amber-600" onclick="PermakApp.switchTab('banking')">
+        <div class="bahi-card p-4 cursor-pointer hover:border-emerald-500" style="border-left: 4px solid #10B981;" onclick="PermakApp.switchTab('banking')">
           <div class="flex items-center justify-between text-xs font-semibold" style="color: var(--text-secondary);">
-            <span>💵 Cash-in-Hand</span>
+            <span class="flex items-center gap-1.5"><span class="acc-emoji-pill" style="background:#DCFCE7;">💵</span> <strong>Cash-in-Hand</strong></span>
             <span class="badge-dr">Dr</span>
           </div>
-          <div class="text-lg font-bold font-mono-num mt-1">${PermakAccounting.formatINR(kpis.totalCash, 0)}</div>
-          <div class="text-xs mt-1" style="color: var(--text-muted);">${buckets.cashAccounts.length} Cash Account(s)</div>
+          <div class="text-lg font-bold font-mono-num mt-2 text-emerald-700">${PermakAccounting.formatINR(kpis.totalCash, 0)}</div>
+          <div class="text-xs mt-1" style="color: var(--text-muted);">👛 ${buckets.cashAccounts.length} Cash Account(s)</div>
         </div>
 
-        <div class="bahi-card p-4 cursor-pointer hover:border-amber-600" onclick="PermakApp.switchTab('banking')">
+        <div class="bahi-card p-4 cursor-pointer hover:border-blue-500" style="border-left: 4px solid #3B82F6;" onclick="PermakApp.switchTab('banking')">
           <div class="flex items-center justify-between text-xs font-semibold" style="color: var(--text-secondary);">
-            <span>🏦 Bank Balances</span>
+            <span class="flex items-center gap-1.5"><span class="acc-emoji-pill" style="background:#DBEAFE;">🏦</span> <strong>Bank Balances</strong></span>
             <span class="badge-dr">Dr</span>
           </div>
-          <div class="text-lg font-bold font-mono-num mt-1">${PermakAccounting.formatINR(kpis.totalBank, 0)}</div>
-          <div class="text-xs mt-1" style="color: var(--text-muted);">${buckets.bankAccounts.length} Savings / Current Bank Account(s)</div>
+          <div class="text-lg font-bold font-mono-num mt-2 text-blue-700">${PermakAccounting.formatINR(kpis.totalBank, 0)}</div>
+          <div class="text-xs mt-1" style="color: var(--text-muted);">🏧 ${buckets.bankAccounts.length} Savings / Current Bank Account(s)</div>
         </div>
 
-        <div class="bahi-card p-4 cursor-pointer hover:border-amber-600" onclick="PermakApp.switchTab('banking')">
+        <div class="bahi-card p-4 cursor-pointer hover:border-purple-500" style="border-left: 4px solid #8B5CF6;" onclick="PermakApp.switchTab('banking')">
           <div class="flex items-center justify-between text-xs font-semibold" style="color: var(--text-secondary);">
-            <span>📈 Investments (FD, SIP, PPF, Gold)</span>
-            <span class="text-emerald-700 font-bold">+${PermakAccounting.formatINRCompact(kpis.unrealizedInvestmentGain)} Gain</span>
+            <span class="flex items-center gap-1.5"><span class="acc-emoji-pill" style="background:#EDE9FE;">📈</span> <strong>Investments</strong></span>
+            <span class="text-emerald-700 font-bold">🚀 +${PermakAccounting.formatINRCompact(kpis.unrealizedInvestmentGain)}</span>
           </div>
-          <div class="text-lg font-bold font-mono-num mt-1">${PermakAccounting.formatINR(kpis.totalInvestmentsBook, 0)} <span class="text-xs font-normal">(Book)</span></div>
-          <div class="text-xs mt-1 text-emerald-700 font-semibold">Market Value: ${PermakAccounting.formatINR(kpis.totalInvestmentsMarket, 0)}</div>
+          <div class="text-lg font-bold font-mono-num mt-2 text-purple-700">${PermakAccounting.formatINR(kpis.totalInvestmentsBook, 0)} <span class="text-xs font-normal">(Book)</span></div>
+          <div class="text-xs mt-1 text-emerald-700 font-semibold">💎 Market Value: ${PermakAccounting.formatINR(kpis.totalInvestmentsMarket, 0)}</div>
         </div>
 
-        <div class="bahi-card p-4 cursor-pointer hover:border-amber-600" onclick="PermakApp.switchTab('balancesheet')">
+        <div class="bahi-card p-4 cursor-pointer hover:border-amber-500" style="border-left: 4px solid #F59E0B;" onclick="PermakApp.switchTab('balancesheet')">
           <div class="flex items-center justify-between text-xs font-semibold" style="color: var(--text-secondary);">
-            <span>🏡 Fixed Assets</span>
+            <span class="flex items-center gap-1.5"><span class="acc-emoji-pill" style="background:#FEF3C7;">🏡</span> <strong>Fixed Assets</strong></span>
             <span class="badge-dr">Dr</span>
           </div>
-          <div class="text-lg font-bold font-mono-num mt-1">${PermakAccounting.formatINR(kpis.totalFixedAssets, 0)}</div>
-          <div class="text-xs mt-1" style="color: var(--text-muted);">${buckets.fixedAssetAccounts.length} Fixed Asset Head(s)</div>
+          <div class="text-lg font-bold font-mono-num mt-2 text-amber-700">${PermakAccounting.formatINR(kpis.totalFixedAssets, 0)}</div>
+          <div class="text-xs mt-1" style="color: var(--text-muted);">🚗 ${buckets.fixedAssetAccounts.length} Fixed Asset Head(s)</div>
         </div>
       </div>
 
@@ -444,18 +445,18 @@ const PermakApp = (() => {
                 <p class="text-xs" style="color: var(--text-muted);">Showing latest vouchers in selected period (${periodTransactions.length} total)</p>
               </div>
               <button class="btn-secondary text-xs" onclick="PermakApp.switchTab('transactions')">
-                View Full Daybook &rarr;
+                📂 View Full Daybook &rarr;
               </button>
             </div>
             <div class="overflow-x-auto">
               <table class="accounting-table">
                 <thead>
                   <tr>
-                    <th>Date</th>
-                    <th>Voucher</th>
-                    <th>Particulars (Dr / Cr Accounts)</th>
-                    <th>Member</th>
-                    <th class="text-right">Amount (₹)</th>
+                    <th>📅 Date</th>
+                    <th>🏷️ Voucher</th>
+                    <th>⚖️ Particulars (Dr / Cr Accounts)</th>
+                    <th>👤 Member</th>
+                    <th class="text-right">💰 Amount (₹)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -468,7 +469,7 @@ const PermakApp = (() => {
                         <td class="font-mono-num text-xs whitespace-nowrap">${PermakAccounting.formatDateIN(tx.date)}</td>
                         <td>
                           <span class="px-2 py-0.5 rounded text-xs font-bold ${getVoucherBadgeClass(tx.voucherType)}">
-                            ${tx.voucherType}
+                            ${getVoucherEmoji(tx.voucherType)} ${tx.voucherType}
                           </span>
                           <div class="text-[11px] font-mono-num mt-0.5" style="color: var(--text-muted);">${escapeHtml(tx.voucherNo || '')}</div>
                         </td>
@@ -476,16 +477,16 @@ const PermakApp = (() => {
                           <div class="font-semibold text-xs">
                             <span class="badge-dr mr-1">Dr</span>
                             <a href="javascript:void(0)" class="hover:underline" onclick="PermakApp.switchTab('ledger', { ledgerAccountId: '${tx.debitAccountId}' })">
-                              ${escapeHtml(drAcc ? drAcc.name : tx.debitAccountId)}
+                              ${getAccountEmoji(drAcc)} ${escapeHtml(drAcc ? drAcc.name : tx.debitAccountId)}
                             </a>
                           </div>
                           <div class="text-xs mt-0.5" style="color: var(--text-secondary);">
                             <span class="badge-cr mr-1">Cr</span>
                             <a href="javascript:void(0)" class="hover:underline" onclick="PermakApp.switchTab('ledger', { ledgerAccountId: '${tx.creditAccountId}' })">
-                              ${escapeHtml(crAcc ? crAcc.name : tx.creditAccountId)}
+                              ${getAccountEmoji(crAcc)} ${escapeHtml(crAcc ? crAcc.name : tx.creditAccountId)}
                             </a>
                           </div>
-                          ${tx.narration ? `<div class="text-[11px] italic mt-0.5" style="color: var(--text-muted);">"${escapeHtml(tx.narration)}"</div>` : ''}
+                          ${tx.narration ? `<div class="text-[11px] italic mt-0.5" style="color: var(--text-muted);">💬 "${escapeHtml(tx.narration)}"</div>` : ''}
                         </td>
                         <td class="text-xs whitespace-nowrap">
                           ${mem ? `${mem.avatar} ${escapeHtml(mem.shortName || mem.name)}` : '🏡 Common'}
@@ -499,7 +500,7 @@ const PermakApp = (() => {
                   ${periodTransactions.length === 0 ? `
                     <tr>
                       <td colspan="5" class="text-center py-8 text-sm" style="color: var(--text-muted);">
-                        No transactions recorded in this date range. Click <strong>+ Record Expense / Income</strong> to add one!
+                        ✨ No transactions recorded in this date range yet. Click <strong>➕ Record Expense / Income</strong> to add your first voucher!
                       </td>
                     </tr>
                   ` : ''}
@@ -512,10 +513,10 @@ const PermakApp = (() => {
           <div class="bahi-card p-5">
             <div class="flex items-center justify-between mb-4">
               <div>
-                <h2 class="font-bold text-base">📉 Major Expense Heads</h2>
-                <p class="text-xs" style="color: var(--text-muted);">Click any head to inspect its detailed Ledger Ledger</p>
+                <h2 class="font-bold text-base">📊 Major Expense Heads</h2>
+                <p class="text-xs" style="color: var(--text-muted);">Click any head to inspect its detailed Account Ledger</p>
               </div>
-              <span class="font-mono-num font-bold text-sm text-orange-700">Total: ${PermakAccounting.formatINR(kpis.totalExpense)}</span>
+              <span class="font-mono-num font-bold text-sm text-rose-600">Total: ${PermakAccounting.formatINR(kpis.totalExpense)}</span>
             </div>
             <div class="space-y-3">
               ${topExpenses.map(exp => {
@@ -523,16 +524,16 @@ const PermakApp = (() => {
                 return `
                   <div class="cursor-pointer group" onclick="PermakApp.switchTab('ledger', { ledgerAccountId: '${exp.id}' })">
                     <div class="flex items-center justify-between text-xs mb-1">
-                      <span class="font-semibold group-hover:underline">${escapeHtml(exp.name)} <span class="text-[11px] font-normal" style="color:var(--text-muted);">(${escapeHtml(exp.groupName)})</span></span>
+                      <span class="font-semibold group-hover:underline">${getAccountEmoji(exp)} ${escapeHtml(exp.name)} <span class="text-[11px] font-normal" style="color:var(--text-muted);">(${escapeHtml(exp.groupName)})</span></span>
                       <span class="font-mono-num font-bold">${PermakAccounting.formatINR(exp.netAmount)} <span class="font-normal text-[11px]" style="color:var(--text-muted);">(${pct.toFixed(1)}%)</span></span>
                     </div>
-                    <div class="w-full h-2 rounded-full overflow-hidden" style="background: var(--bg-elevated);">
-                      <div class="h-full rounded-full" style="width: ${pct}%; background: var(--accent-primary);"></div>
+                    <div class="w-full h-2.5 rounded-full overflow-hidden" style="background: var(--bg-elevated);">
+                      <div class="h-full rounded-full" style="width: ${pct}%; background: linear-gradient(90deg, #6366F1, #EC4899, #F59E0B);"></div>
                     </div>
                   </div>
                 `;
               }).join('')}
-              ${topExpenses.length === 0 ? `<p class="text-xs" style="color:var(--text-muted);">No expenses in this period.</p>` : ''}
+              ${topExpenses.length === 0 ? `<p class="text-xs" style="color:var(--text-muted);">🎉 No expenses recorded in this period yet.</p>` : ''}
             </div>
           </div>
         </div>
@@ -713,51 +714,51 @@ const PermakApp = (() => {
         <form id="smartVoucherForm" class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label class="block text-xs font-bold mb-1">Date *</label>
-              <input type="date" id="vchDate" class="permak-input font-mono-num" value="2026-10-10" required />
+              <label class="block text-xs font-bold mb-1">📅 Date *</label>
+              <input type="date" id="vchDate" class="permak-input font-mono-num" value="2026-10-12" required />
             </div>
 
             <div>
-              <label class="block text-xs font-bold mb-1">Voucher No</label>
+              <label class="block text-xs font-bold mb-1">🏷️ Voucher No</label>
               <input type="text" id="vchNo" class="permak-input font-mono-num" value="${escapeHtml(nextVchNo)}" required />
             </div>
 
             <div>
-              <label class="block text-xs font-bold mb-1">${modeConfig.primaryLabel} *</label>
+              <label class="block text-xs font-bold mb-1">📒 ${modeConfig.primaryLabel} *</label>
               <select id="vchPrimaryAccount" class="permak-select" required>
-                ${modeConfig.primaryOptions.map(a => `<option value="${a.id}">${escapeHtml(a.name)} (${escapeHtml(a.subType || a.nature)})</option>`).join('')}
+                ${modeConfig.primaryOptions.map(a => `<option value="${a.id}">${getAccountEmoji(a)} ${escapeHtml(a.name)} (${escapeHtml(a.subType || a.nature)})</option>`).join('')}
               </select>
             </div>
 
             <div>
-              <label class="block text-xs font-bold mb-1">${modeConfig.secondaryLabel} *</label>
+              <label class="block text-xs font-bold mb-1">🏦 ${modeConfig.secondaryLabel} *</label>
               <select id="vchSecondaryAccount" class="permak-select" required>
-                ${modeConfig.secondaryOptions.map(a => `<option value="${a.id}">${escapeHtml(a.name)} (${escapeHtml(a.subType || a.nature)})</option>`).join('')}
+                ${modeConfig.secondaryOptions.map(a => `<option value="${a.id}">${getAccountEmoji(a)} ${escapeHtml(a.name)} (${escapeHtml(a.subType || a.nature)})</option>`).join('')}
               </select>
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label class="block text-xs font-bold mb-1">Amount in ₹ *</label>
+              <label class="block text-xs font-bold mb-1">💰 Amount in ₹ *</label>
               <input type="number" step="0.01" min="0.01" id="vchAmount" class="permak-input font-mono-num font-bold text-base" placeholder="e.g. 2500" required />
             </div>
 
             <div>
-              <label class="block text-xs font-bold mb-1">Payment Mode</label>
+              <label class="block text-xs font-bold mb-1">💳 Payment Mode</label>
               <select id="vchPaymentMode" class="permak-select">
-                <option value="UPI">UPI (GPay / PhonePe / Paytm)</option>
-                <option value="NEFT/IMPS">NEFT / IMPS / RTGS Bank Transfer</option>
-                <option value="Cash">Cash</option>
-                <option value="Auto-Debit/ECS">Auto-Debit / NACH / SIP Mandate</option>
-                <option value="Card">Debit / Credit Card</option>
-                <option value="Cheque">Cheque / DD</option>
-                <option value="Journal">Book Adjustment / Journal</option>
+                <option value="UPI">📱 UPI (GPay / PhonePe / Paytm)</option>
+                <option value="NEFT/IMPS">🏦 NEFT / IMPS / RTGS Bank Transfer</option>
+                <option value="Cash">💵 Cash</option>
+                <option value="Auto-Debit/ECS">🔄 Auto-Debit / NACH / SIP Mandate</option>
+                <option value="Card">💳 Debit / Credit Card</option>
+                <option value="Cheque">🧾 Cheque / DD</option>
+                <option value="Journal">📒 Book Adjustment / Journal</option>
               </select>
             </div>
 
             <div>
-              <label class="block text-xs font-bold mb-1">Family Member</label>
+              <label class="block text-xs font-bold mb-1">👤 Family Member</label>
               <select id="vchMemberId" class="permak-select">
                 ${(state.familyMembers || []).map(m => `
                   <option value="${m.id}" ${ui.selectedMemberId !== 'ALL' && ui.selectedMemberId === m.id ? 'selected' : ''}>
@@ -768,14 +769,14 @@ const PermakApp = (() => {
             </div>
 
             <div>
-              <label class="block text-xs font-bold mb-1">Ref / Bill / UTR No</label>
+              <label class="block text-xs font-bold mb-1">🔢 Ref / Bill / UTR No</label>
               <input type="text" id="vchRefNo" class="permak-input font-mono-num" placeholder="Optional UTR / Bill No" />
             </div>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-end">
             <div class="lg:col-span-2">
-              <label class="block text-xs font-bold mb-1">Narration / Particulars</label>
+              <label class="block text-xs font-bold mb-1">💬 Narration / Particulars</label>
               <input type="text" id="vchNarration" class="permak-input" placeholder="e.g. Monthly Kirana from DMart / October Salary / School Fee..." />
             </div>
 
@@ -817,7 +818,7 @@ const PermakApp = (() => {
                    style="width: 230px;" />
 
             <select class="permak-select text-xs" style="width: 155px;" onchange="PermakApp.setTxTypeFilter(this.value)">
-              <option value="ALL" ${ui.txTypeFilter === 'ALL' ? 'selected' : ''}>All Voucher Types</option>
+              <option value="ALL" ${ui.txTypeFilter === 'ALL' ? 'selected' : ''}>🌈 All Voucher Types</option>
               <option value="RECEIPT" ${ui.txTypeFilter === 'RECEIPT' ? 'selected' : ''}>🟢 Receipt (Income)</option>
               <option value="PAYMENT" ${ui.txTypeFilter === 'PAYMENT' ? 'selected' : ''}>🔴 Payment (Expense)</option>
               <option value="CONTRA" ${ui.txTypeFilter === 'CONTRA' ? 'selected' : ''}>🔵 Contra (Transfer)</option>
@@ -835,14 +836,14 @@ const PermakApp = (() => {
           <table class="accounting-table">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Vch No &amp; Type</th>
-                <th>Debit</th>
-                <th>Credit</th>
-                <th>Narration &amp; Mode</th>
-                <th>Member</th>
-                <th class="text-right">Amount (₹)</th>
-                <th class="text-center">Actions</th>
+                <th>📅 Date</th>
+                <th>🏷️ Vch No &amp; Type</th>
+                <th>🔴 Debit (Dr)</th>
+                <th>🟢 Credit (Cr)</th>
+                <th>💬 Narration &amp; Mode</th>
+                <th>👤 Member</th>
+                <th class="text-right">💰 Amount (₹)</th>
+                <th class="text-center">⚙️ Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -854,21 +855,21 @@ const PermakApp = (() => {
                   <tr>
                     <td class="font-mono-num text-xs whitespace-nowrap">${PermakAccounting.formatDateIN(tx.date)}</td>
                     <td class="whitespace-nowrap">
-                      <span class="px-2 py-0.5 rounded text-[11px] font-bold ${getVoucherBadgeClass(tx.voucherType)}">${tx.voucherType}</span>
+                      <span class="px-2 py-0.5 rounded text-[11px] font-bold ${getVoucherBadgeClass(tx.voucherType)}">${getVoucherEmoji(tx.voucherType)} ${tx.voucherType}</span>
                       <div class="font-mono-num text-[11px] mt-0.5" style="color:var(--text-muted);">${escapeHtml(tx.voucherNo || '')}</div>
                     </td>
                     <td>
                       <span class="badge-dr mr-1">Dr</span>
                       <a href="javascript:void(0)" class="font-semibold text-xs hover:underline"
                          onclick="PermakApp.switchTab('ledger', { ledgerAccountId: '${tx.debitAccountId}' })">
-                        ${escapeHtml(drAcc ? drAcc.name : tx.debitAccountId)}
+                        ${getAccountEmoji(drAcc)} ${escapeHtml(drAcc ? drAcc.name : tx.debitAccountId)}
                       </a>
                     </td>
                     <td>
                       <span class="badge-cr mr-1">Cr</span>
                       <a href="javascript:void(0)" class="font-semibold text-xs hover:underline"
                          onclick="PermakApp.switchTab('ledger', { ledgerAccountId: '${tx.creditAccountId}' })">
-                        ${escapeHtml(crAcc ? crAcc.name : tx.creditAccountId)}
+                        ${getAccountEmoji(crAcc)} ${escapeHtml(crAcc ? crAcc.name : tx.creditAccountId)}
                       </a>
                     </td>
                     <td class="text-xs">
@@ -1938,12 +1939,12 @@ const PermakApp = (() => {
     return `
       <div class="bahi-card p-4 mb-5 flex flex-wrap items-center justify-between gap-4 no-print">
         <div class="flex flex-wrap items-center gap-3">
-          <label class="text-xs font-bold uppercase">Select Account Ledger:</label>
+          <label class="text-xs font-bold uppercase">📖 Select Account Ledger:</label>
           <select class="permak-select font-bold text-sm" style="min-width: 320px;"
                   onchange="PermakApp.switchTab('ledger', { ledgerAccountId: this.value })">
             ${accounts.map(a => `
               <option value="${a.id}" ${a.id === ui.selectedLedgerAccountId ? 'selected' : ''}>
-                [${a.code || a.nature}] ${escapeHtml(a.name)}
+                ${getAccountEmoji(a)} [${a.code || a.nature}] ${escapeHtml(a.name)}
               </option>
             `).join('')}
           </select>
@@ -1963,9 +1964,9 @@ const PermakApp = (() => {
         <div class="flex flex-wrap items-center justify-between gap-4 border-b-2 pb-4 mb-4" style="border-color:var(--border-strong);">
           <div>
             <div class="text-xs font-bold uppercase" style="color:var(--accent-primary);">
-              KHATA BAHI / ACCOUNT LEDGER STATEMENT
+              📖 ACCOUNT LEDGER STATEMENT
             </div>
-            <h2 class="text-xl font-bold font-serif-book mt-1">${escapeHtml(ledger.account.name)}</h2>
+            <h2 class="text-xl font-bold font-serif-book mt-1">${getAccountEmoji(ledger.account)} ${escapeHtml(ledger.account.name)}</h2>
             <div class="text-xs mt-0.5" style="color:var(--text-secondary);">
               Nature: <strong>${ledger.account.nature}</strong>
               ${ledger.account.accountNo ? ` • A/c or Ref: <strong>${escapeHtml(ledger.account.accountNo)}</strong>` : ''}
@@ -2127,14 +2128,14 @@ const PermakApp = (() => {
           <table class="accounting-table">
             <thead>
               <tr>
-                <th>Code</th>
-                <th>Ledger Account Name</th>
-                <th>Pillar / Nature</th>
-                <th>Indian Accounting Group</th>
-                <th>Member</th>
-                <th class="text-right">Opening Balance</th>
-                <th class="text-right">Closing Balance</th>
-                <th class="text-center">Actions</th>
+                <th>🔢 Code</th>
+                <th>📒 Ledger Account Name</th>
+                <th>🏷️ Pillar / Nature</th>
+                <th>📂 Indian Accounting Group</th>
+                <th>👤 Member</th>
+                <th class="text-right">🏁 Opening Balance</th>
+                <th class="text-right">💰 Closing Balance</th>
+                <th class="text-center">⚙️ Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -2144,11 +2145,12 @@ const PermakApp = (() => {
                   <tr>
                     <td class="font-mono-num text-xs">${escapeHtml(acc.code || '-')}</td>
                     <td>
-                      <a href="javascript:void(0)" class="font-bold text-sm hover:underline"
+                      <a href="javascript:void(0)" class="font-bold text-sm hover:underline flex items-center gap-2"
                          onclick="PermakApp.switchTab('ledger', { ledgerAccountId: '${acc.id}' })">
-                        ${escapeHtml(acc.name)}
+                        <span class="acc-emoji-pill" style="background: var(--bg-elevated);">${getAccountEmoji(acc)}</span>
+                        <span>${escapeHtml(acc.name)}</span>
                       </a>
-                      ${acc.accountNo ? `<div class="text-[11px] font-mono-num" style="color:var(--text-muted);">${escapeHtml(acc.accountNo)}</div>` : ''}
+                      ${acc.accountNo ? `<div class="text-[11px] font-mono-num pl-9" style="color:var(--text-muted);">${escapeHtml(acc.accountNo)}</div>` : ''}
                     </td>
                     <td>
                       <span class="px-2 py-0.5 rounded text-[10px] font-bold ${getNatureBadgeClass(acc.nature)}">${acc.nature}</span>
@@ -2165,7 +2167,7 @@ const PermakApp = (() => {
                     <td class="text-center whitespace-nowrap">
                       <button class="px-2 py-1 rounded text-xs font-semibold hover:bg-amber-100 text-amber-900 mr-1"
                               onclick="PermakApp.switchTab('ledger', { ledgerAccountId: '${acc.id}' })">
-                        📖 Khata
+                        📖 Ledger
                       </button>
                       <button class="px-2 py-1 rounded text-xs font-semibold hover:bg-blue-100 text-blue-800 mr-1"
                               onclick="PermakApp.openAccountModal('${acc.nature}', '${acc.id}')">
@@ -2890,11 +2892,54 @@ const PermakApp = (() => {
   function getVoucherBadgeClass(vType) {
     switch (vType) {
       case "RECEIPT": return "bg-emerald-100 text-emerald-900";
-      case "PAYMENT": return "bg-orange-100 text-orange-900";
+      case "PAYMENT": return "bg-rose-100 text-rose-900";
       case "CONTRA": return "bg-blue-100 text-blue-900";
       case "INVESTMENT": return "bg-purple-100 text-purple-900";
       default: return "bg-amber-100 text-amber-900";
     }
+  }
+
+  function getVoucherEmoji(vType) {
+    switch (vType) {
+      case "RECEIPT": return "🟢";
+      case "PAYMENT": return "🔴";
+      case "CONTRA": return "🔵";
+      case "INVESTMENT": return "🟣";
+      default: return "🟡";
+    }
+  }
+
+  function getAccountEmoji(acc) {
+    if (!acc) return "📒";
+    if (acc.icon) return acc.icon;
+    const id = String(acc.id || "").toLowerCase();
+    const grp = String(acc.groupId || "").toLowerCase();
+    const sub = String(acc.subType || "").toLowerCase();
+    const nm = String(acc.name || "").toLowerCase();
+
+    if (sub === "cash" || grp.includes("cash") || nm.includes("cash")) return "💵";
+    if (sub === "bank" || grp.includes("bank") || nm.includes("bank")) return "🏦";
+    if (nm.includes("fd") || nm.includes("fixed deposit")) return "🔐";
+    if (sub === "investment" || grp.includes("invest") || nm.includes("invest") || nm.includes("sip")) return "📈";
+    if (sub === "fixed_asset" || grp.includes("fixed") || nm.includes("property")) return "🏡";
+    if (sub === "capital" || grp.includes("capital") || nm.includes("corpus") || nm.includes("capital")) return "🏛️";
+    if (sub === "credit_card" || nm.includes("card")) return "💳";
+    if (sub === "loan" || grp.includes("loan") || nm.includes("loan")) return "🏷️";
+
+    if (acc.nature === "INCOME") {
+      if (nm.includes("salary") || nm.includes("business") || grp.includes("direct")) return "💰";
+      return "🪙";
+    }
+    if (acc.nature === "EXPENSE") {
+      if (nm.includes("grocer") || nm.includes("milk") || nm.includes("kitchen") || grp.includes("kitchen")) return "🛒";
+      if (nm.includes("electric") || nm.includes("utility") || nm.includes("internet") || nm.includes("gas")) return "⚡";
+      if (nm.includes("rent") || nm.includes("society") || nm.includes("maid") || nm.includes("housing")) return "🏘️";
+      if (nm.includes("medical") || nm.includes("edu") || nm.includes("school") || grp.includes("edu")) return "🎓";
+      if (nm.includes("petrol") || nm.includes("fuel") || nm.includes("travel") || nm.includes("vehicle")) return "⛽";
+      if (nm.includes("shop") || nm.includes("dining") || grp.includes("lifestyle")) return "🛍️";
+      return "🧾";
+    }
+    return "📒";
   }
 
   function getNatureBadgeClass(nature) {
@@ -2902,7 +2947,7 @@ const PermakApp = (() => {
       case "ASSET": return "bg-blue-100 text-blue-900";
       case "LIABILITY": return "bg-purple-100 text-purple-900";
       case "INCOME": return "bg-emerald-100 text-emerald-900";
-      case "EXPENSE": return "bg-orange-100 text-orange-900";
+      case "EXPENSE": return "bg-rose-100 text-rose-900";
       default: return "bg-gray-100 text-gray-800";
     }
   }

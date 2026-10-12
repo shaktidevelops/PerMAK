@@ -6,6 +6,34 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Noto+Sans+Devanagari:wght@500;600;700&display=swap');
 
 :root,
+[data-theme="colorful"] {
+  --bg-body: #F3F6FC;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #EDF2FA;
+  --bg-sidebar: linear-gradient(180deg, #1E1B4B 0%, #311042 55%, #1E293B 100%);
+  --bg-sidebar-hover: rgba(255, 255, 255, 0.12);
+  --text-sidebar: #F8FAFC;
+  --text-sidebar-muted: #CBD5E1;
+  --accent-primary: #4F46E5;      /* Vibrant Royal Indigo */
+  --accent-primary-hover: #4338CA;
+  --accent-secondary: #EC4899;    /* Vibrant Pink / Coral */
+  --accent-light: #EEF2FF;
+  --accent-gold-bg: #FEF3C7;
+  --border-color: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --text-main: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --dr-color: #E11D48;            /* Vibrant Rose Debit */
+  --dr-bg: #FFE4E6;
+  --cr-color: #059669;            /* Vibrant Emerald Credit */
+  --cr-bg: #D1FAE5;
+  --ledger-line: rgba(79, 70, 229, 0.07);
+  --shadow-card: 0 10px 25px -5px rgba(79, 70, 229, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+  --header-sacred-bg: linear-gradient(90deg, #4F46E5 0%, #7C3AED 35%, #DB2777 70%, #EA580C 100%);
+  --header-sacred-text: #FFFFFF;
+}
+
 [data-theme="bahi"] {
   --bg-body: #F8F4EC;
   --bg-surface: #FFFDF9;
@@ -437,3 +465,49 @@ body {
     padding: 0.5rem 0.8rem;
   }
 }
+
+/* Colorful Emoji Icon Badges & Vibrant Gradient Cards */
+.nav-emoji-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.acc-emoji-pill {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.kpi-card-networth {
+  border-top: 4px solid #6366F1 !important;
+  background: linear-gradient(145deg, var(--bg-surface) 60%, rgba(99, 102, 241, 0.07) 100%);
+}
+
+.kpi-card-income {
+  border-top: 4px solid #10B981 !important;
+  background: linear-gradient(145deg, var(--bg-surface) 60%, rgba(16, 185, 129, 0.08) 100%);
+}
+
+.kpi-card-expense {
+  border-top: 4px solid #F43F5E !important;
+  background: linear-gradient(145deg, var(--bg-surface) 60%, rgba(244, 63, 94, 0.08) 100%);
+}
+
+.kpi-card-surplus {
+  border-top: 4px solid #F59E0B !important;
+  background: linear-gradient(145deg, var(--bg-surface) 60%, rgba(245, 158, 11, 0.08) 100%);
+}
+
